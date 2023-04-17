@@ -25,8 +25,8 @@ conda init bash
 
 # If 'conda activate' fails below, try uncommenting the following lines,
 # based on https://github.com/conda/conda/issues/7980.
-# CONDA_PATH=$(conda info | grep -i 'base environment' | awk '{print $4}')
-# source $CONDA_PATH/etc/profile.d/conda.sh
+CONDA_PATH=$(conda info | grep -i 'base environment' | awk '{print $4}')
+source $CONDA_PATH/etc/profile.d/conda.sh
 
 conda activate xtreme
 
