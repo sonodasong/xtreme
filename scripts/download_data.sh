@@ -257,8 +257,8 @@ function download_mewslix {
     ( # Use a subshell to keep things separate from an already active conda env.
     # If 'conda activate' fails below, try uncommenting the following lines,
     # based on https://github.com/conda/conda/issues/7980.
-    # CONDA_PATH=$(conda info | grep -i 'base environment' | awk '{print $4}')
-    # source $CONDA_PATH/etc/profile.d/conda.sh
+    CONDA_PATH=$(conda info | grep -i 'base environment' | awk '{print $4}')
+    source $CONDA_PATH/etc/profile.d/conda.sh
 
     # Create and activate a dedicated conda environment for Mewsli-X extraction.
     bash create-env.sh conda
