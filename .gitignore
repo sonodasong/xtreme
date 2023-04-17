@@ -136,3 +136,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Third party packages
+/third_party/transformers/
+/third_party/kytea/
