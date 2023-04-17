@@ -113,7 +113,7 @@ def panx_preprocess(args):
           if idx != -1:
             token = items[0][idx+1:].strip()
             if 'test' in infile:
-              fout.write(f'{token}\n')
+              fout.write(f'{token}\t{label}\n')
             else:
               fout.write(f'{token}\t{label}\n')
         else:
@@ -249,7 +249,7 @@ def udpos_preprocess(args):
               for widx, (w, t) in enumerate(zip(sent, tag)):
                 newline = '' if (sidx == len(data[split]) - 1) and (widx == len(sent) - 1) else '\n'
                 if split == 'test':
-                  fout.write('{}{}'.format(w, newline))
+                  fout.write('{}\t{}{}'.format(w, t, newline))
                 else:
                   fout.write('{}\t{}{}'.format(w, t, newline))
               fout.write('\n')
@@ -342,7 +342,7 @@ def xnli_preprocess(args):
         writer = csv.writer(fout, delimiter='\t')
         for (sent1, sent2, label) in pairs:
           if split == 'test':
-            writer.writerow([sent1, sent2])
+            writer.writerow([sent1, sent2, label])
           else:
             writer.writerow([sent1, sent2, label])
       print(f'finish preprocess {outfile}')
@@ -395,23 +395,25 @@ def tatoeba_preprocess(args):
       tgt_file = f'{args.data_dir}/tatoeba.{sl3}-eng.eng'
       src_out = f'{args.output_dir}/{sl2}-en.{sl2}'
       tgt_out = f'{args.output_dir}/{sl2}-en.en'
+      gld_out = f'{args.output_dir}/{sl2}-en.gold'
       shutil.copy(src_file, src_out)
       tgts = [l.strip() for l in open(tgt_file)]
       idx = range(len(tgts))
       data = zip(tgts, idx)
-      with open(tgt_out, 'w') as ftgt:
+      with open(tgt_out, 'w') as ftgt, open(gld_out, 'w') as fgld:
         for t, i in sorted(data, key=lambda x: x[0]):
           ftgt.write(f'{t}\n')
+          fgld.write(f'{i}\n')
 
 
 def xquad_preprocess(args):
   # Remove the test annotations to prevent accidental cheating
-  remove_qa_test_annotations(args.data_dir)
+  pass
 
 
 def mlqa_preprocess(args):
   # Remove the test annotations to prevent accidental cheating
-  remove_qa_test_annotations(args.data_dir)
+  pass
 
 
 def tydiqa_preprocess(args):
@@ -460,7 +462,7 @@ def tydiqa_preprocess(args):
     os.rename(src_file, dst_file)
 
   # Remove the test annotations to prevent accidental cheating
-  remove_qa_test_annotations(dev_dir)
+  # remove_qa_test_annotations(dev_dir)
 
 
 def remove_qa_test_annotations(test_dir):
