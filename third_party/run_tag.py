@@ -508,7 +508,7 @@ def main():
   args.device = device
 
   # Setup logging
-  logging.basicConfig(handlers = [logging.FileHandler(args.log_file), logging.StreamHandler()],
+  logging.basicConfig(handlers = [logging.FileHandler(os.path.join(args.output_dir, args.log_file)), logging.StreamHandler()],
                       format = '%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                       datefmt = '%m/%d/%Y %H:%M:%S',
                       level = logging.INFO if args.local_rank in [-1, 0] else logging.WARN)

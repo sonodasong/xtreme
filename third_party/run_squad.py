@@ -835,6 +835,7 @@ def main():
       results.update(result)
 
   logger.info("Results: {}".format(results))
+  print(results)
 
   return results
 
