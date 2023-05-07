@@ -8,7 +8,10 @@ import numpy as np
 from tqdm import tqdm
 
 from transformers.file_utils import is_tf_available, is_torch_available
-from transformers.tokenization_bert import whitespace_tokenize
+try:
+    from transformers.tokenization_bert import whitespace_tokenize
+except:
+    from transformers.models.bert.tokenization_bert import whitespace_tokenize
 from transformers import DataProcessor
 
 if is_torch_available():
@@ -127,26 +130,46 @@ def squad_convert_example_to_features(example, max_seq_length, doc_stride, max_q
     spans = []
 
     truncated_query = tokenizer.encode(example.question_text, add_special_tokens=False, max_length=max_query_length)
-    sequence_added_tokens = (
-        tokenizer.max_len - tokenizer.max_len_single_sentence + 1
-        if "roberta" in str(type(tokenizer))
-        else tokenizer.max_len - tokenizer.max_len_single_sentence
-    )
-    sequence_pair_added_tokens = tokenizer.max_len - tokenizer.max_len_sentences_pair
+    try:
+        sequence_added_tokens = (
+            tokenizer.max_len - tokenizer.max_len_single_sentence + 1
+            if "roberta" in str(type(tokenizer))
+            else tokenizer.max_len - tokenizer.max_len_single_sentence
+        )
+        sequence_pair_added_tokens = tokenizer.max_len - tokenizer.max_len_sentences_pair
+    except:
+        sequence_added_tokens = (
+            tokenizer.model_max_length - tokenizer.max_len_single_sentence + 1
+            if "roberta" in str(type(tokenizer))
+            else tokenizer.model_max_length - tokenizer.max_len_single_sentence
+        )
+        sequence_pair_added_tokens = tokenizer.model_max_length - tokenizer.max_len_sentences_pair
 
     span_doc_tokens = all_doc_tokens
     while len(spans) * doc_stride < len(all_doc_tokens):
 
-        encoded_dict = tokenizer.encode_plus(
-            truncated_query if tokenizer.padding_side == "right" else span_doc_tokens,
-            span_doc_tokens if tokenizer.padding_side == "right" else truncated_query,
-            max_length=max_seq_length,
-            return_overflowing_tokens=True,
-            pad_to_max_length=True,
-            stride=max_seq_length - doc_stride - len(truncated_query) - sequence_pair_added_tokens,
-            truncation_strategy="only_second" if tokenizer.padding_side == "right" else "only_first",
-            return_token_type_ids=True
-        )
+        try:
+            encoded_dict = tokenizer.encode_plus(
+                truncated_query if tokenizer.padding_side == "right" else span_doc_tokens,
+                span_doc_tokens if tokenizer.padding_side == "right" else truncated_query,
+                max_length=max_seq_length,
+                return_overflowing_tokens=True,
+                pad_to_max_length=True,
+                stride=max_seq_length - doc_stride - len(truncated_query) - sequence_pair_added_tokens,
+                truncation_strategy="only_second" if tokenizer.padding_side == "right" else "only_first",
+                return_token_type_ids=True
+            )
+        except:
+            encoded_dict = tokenizer.encode_plus(
+                truncated_query if tokenizer.padding_side == "right" else span_doc_tokens,
+                span_doc_tokens if tokenizer.padding_side == "right" else truncated_query,
+                max_length=max_seq_length,
+                return_overflowing_tokens=True,
+                pad_to_max_length=True,
+                stride=max_seq_length - doc_stride - len(truncated_query) - sequence_pair_added_tokens,
+                truncation="only_second" if tokenizer.padding_side == "right" else "only_first",
+                return_token_type_ids=True
+            )
 
         paragraph_len = min(
             len(all_doc_tokens) - len(spans) * doc_stride,
@@ -175,7 +198,7 @@ def squad_convert_example_to_features(example, max_seq_length, doc_stride, max_q
 
         spans.append(encoded_dict)
 
-        if "overflowing_tokens" not in encoded_dict:
+        if "overflowing_tokens" not in encoded_dict or len(encoded_dict["overflowing_tokens"]) == 0:
             break
         span_doc_tokens = encoded_dict["overflowing_tokens"]
 

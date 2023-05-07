@@ -15,7 +15,7 @@
 from __future__ import absolute_import, division, print_function
 
 import argparse
-from transformers import BertTokenizer, XLMTokenizer, XLMRobertaTokenizer
+from transformers import BertTokenizer, XLMTokenizer, XLMRobertaTokenizer, AutoTokenizer
 import os
 from collections import defaultdict
 import csv
@@ -29,6 +29,7 @@ TOKENIZERS = {
   'bert': BertTokenizer,
   'xlm': XLMTokenizer,
   'xlmr': XLMRobertaTokenizer,
+  'auto': AutoTokenizer
 }
 
 PANX_LANGUAGES = 'ar he vi id jv ms tl eu ml ta te af nl en de el bn hi mr ur fa fr it pt es bg ru ja ka ko th sw yo my zh kk tr et fi hu qu pl uk az lt pa gu ro'.split(' ')
