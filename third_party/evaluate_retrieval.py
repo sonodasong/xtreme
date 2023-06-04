@@ -791,10 +791,11 @@ def main():
 
     src_lang2 = args.src_language
     tgt_lang2 = args.tgt_language
-    src_text_file = os.path.join(args.data_dir, 'tatoeba.{}-eng.{}'.format(src_lang2, src_lang2))
-    tgt_text_file = os.path.join(args.data_dir, 'tatoeba.{}-eng.eng'.format(src_lang2))
-    src_tok_file = os.path.join(args.output_dir, 'tatoeba.{}-eng.tok.{}'.format(src_lang2, src_lang2))
-    tgt_tok_file = os.path.join(args.output_dir, 'tatoeba.{}-eng.tok.eng'.format(src_lang2))
+    src_text_file = os.path.join(args.data_dir, '{}-en.{}'.format(src_lang2, src_lang2))
+    tgt_text_file = os.path.join(args.data_dir, '{}-en.en'.format(src_lang2))
+    gld_text_file = os.path.join(args.data_dir, '{}-en.gold'.format(src_lang2))
+    src_tok_file = os.path.join(args.output_dir, '{}-en.tok.{}'.format(src_lang2, src_lang2))
+    tgt_tok_file = os.path.join(args.output_dir, '{}-en.tok.en'.format(src_lang2))
 
     all_src_embeds = extract_embeddings(args, src_text_file, src_tok_file, None, lang=src_lang2, pool_type=args.pool_type)
     all_tgt_embeds = extract_embeddings(args, tgt_text_file, tgt_tok_file, None, lang=tgt_lang2, pool_type=args.pool_type)
@@ -809,6 +810,9 @@ def main():
       with open(os.path.join(args.output_dir, f'test_{src_lang2}_predictions.txt'), 'w') as fout:
         for p in predictions:
           fout.write(str(p) + '\n')
+      with open(gld_text_file, 'r') as fgld:
+        labels = [int(line.strip()) for line in fgld.readlines()]
+      print(sum([p[0] == l for p, l in zip(predictions, labels)]) / len(labels))
 
 
 main()
