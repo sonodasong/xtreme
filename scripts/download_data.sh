@@ -161,7 +161,7 @@ function download_bucc18 {
     mv $base_dir/*/* $base_dir/
     for f in $base_dir/*training*; do mv $f ${f/training/test}; done
     for f in $base_dir/*sample*; do mv $f ${f/sample/dev}; done
-    rm -rf $base_dir/*test.gold $DIR/bucc2018*tar.bz2 $base_dir/{zh,ru,de,fr}-en/
+    rm -rf $DIR/bucc2018*tar.bz2 $base_dir/{zh,ru,de,fr}-en/
     echo "Successfully downloaded data at $DIR/bucc2018" >> $DIR/download.log
 }
 
