@@ -342,7 +342,7 @@ def load_and_cache_examples(args, tokenizer, labels, pad_token_label_id, mode, l
     logger.info("all languages = {}".format(lang))
     features = []
     for lg in langs:
-      data_file = os.path.join(args.data_dir, lg, "{}.{}".format(mode, args.model_name_or_path))
+      data_file = os.path.join(args.data_dir, lg, "{}.{}".format(mode, args.model_name))
       logger.info("Creating features from dataset file at {} in language {}".format(data_file, lg))
       examples = read_examples_from_file(data_file, lg, lang2id)
       features_lg = convert_examples_to_features(examples, labels, args.max_seq_length, tokenizer,
@@ -394,6 +394,7 @@ def main():
             help="The input data dir. Should contain the training files for the NER/POS task.")
   parser.add_argument("--model_type", default=None, type=str, required=True,
             help="Model type selected in the list: " + ", ".join(MODEL_CLASSES.keys()))
+  parser.add_argument("--model_name", default=None, type=str, required=True)
   parser.add_argument("--model_name_or_path", default=None, type=str, required=True,
             help="Path to pre-trained model or shortcut name selected in the list: " + ", ".join(ALL_MODELS))
   parser.add_argument("--output_dir", default=None, type=str, required=True,
