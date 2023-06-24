@@ -754,6 +754,7 @@ def main():
     model.to(args.device)
 
   # Evaluation
+  result = None
   results = {}
   if args.init_checkpoint:
     best_checkpoint = args.init_checkpoint
