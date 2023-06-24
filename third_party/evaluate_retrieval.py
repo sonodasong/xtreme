@@ -491,7 +491,7 @@ def main():
 
         for idx in indices:
           suf = str(idx)
-          cand2score_file = os.path.join(args.output_dir, '{}_{}.tsv'.format(args.candidate_prefix, suf))
+          cand2score_file = os.path.join(args.output_dir, '{}_{}_{}.tsv'.format(args.candidate_prefix, f'{SL}-{TL}.{split}', suf))
           if os.path.exists(cand2score_file):
             logger.info('cand2score_file {} exists'.format(cand2score_file))
           else:
@@ -500,8 +500,8 @@ def main():
             mine_bitext(x, y, f'{prefix}.{SL}.txt', f'{prefix}.{TL}.txt', cand2score_file, dist=args.dist, use_shift_embeds=args.use_shift_embeds)
           gold_file = f'{prefix}.gold'
           if os.path.exists(gold_file):
-            predict_file = os.path.join(args.predict_dir, f'test-{SL}.tsv')
-            results = bucc_eval(cand2score_file, gold_file, f'{prefix}.{SL}.txt', f'{prefix}.{TL}.txt', f'{prefix}.{SL}.id', f'{prefix}.id', predict_file, threshold)
+            predict_file = os.path.join(args.predict_dir, f'{SL}-{TL}.{split}_{suf}.tsv')
+            results = bucc_eval(cand2score_file, gold_file, f'{prefix}.{SL}.txt', f'{prefix}.{TL}.txt', f'{prefix}.{SL}.id', f'{prefix}.{TL}.id', predict_file, threshold=None)
             best_threshold = results['best-threshold']
             logger.info('--Candidates: {}'.format(cand2score_file))
             logger.info('index={} '.format(suf) + ' '.join('{}={:.4f}'.format(k,v) for k,v in results.items()))
